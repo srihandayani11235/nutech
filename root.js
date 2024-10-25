@@ -33,48 +33,84 @@ app.post('/registration', async (req, res) => {
       "message": "Password Minimal 8 karakter",
       "data": null
     });
+  } else if (!email.includes('@')) {
+    res.status(200).json({
+      "status": 102,
+      "message": "Paramter email tidak sesuai format",
+      "data": null
+    })
+  } else if (!email.includes('.')) {
+    res.status(200).json({
+      "status": 102,
+      "message": "Paramter email tidak sesuai format",
+      "data": null
+    })
   } else {
-
-    const sql = await executeQuery('insert into users(email,first_name,last_name,password)values(?,?,?,?) ', [email, fn, ln, password])
-    if (sql != undefined || sql != "") {
-      await executeQuery('insert into balance(email,balances)values(?,?) ', [email, 0])
+    const check = await executeQuery('select * from users where email = ? ', [email]);
+    if (check?.length > 0) {
       res.status(200).json({
         "status": 0,
-        "message": "Registrasi berhasil silahkan login",
+        "message": "Email Telah Tersedia , Silahkan Gunakan Email Lain",
         "data": null
       });
+
     } else {
-      res.status(200).json({
-        "status": 102,
-        "message": "Paramter email tidak sesuai format",
-        "data": null
-      })
+      const sql = await executeQuery('insert into users(email,first_name,last_name,password)values(?,?,?,?) ', [email, fn, ln, password])
+      if (sql != undefined || sql != "") {
+        await executeQuery('insert into balance(email,balances)values(?,?) ', [email, 0])
+        res.status(200).json({
+          "status": 0,
+          "message": "Registrasi berhasil silahkan login",
+          "data": null
+        });
+      }
     }
   }
+
 })
 
 
 app.post('/login', async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-  const sql = await executeQuery('select * from users where email= ? and password = ? limit 1', [email, password])
-  if (sql.length > 0) {
-    const user = {
-      email: email,
-    }
-    const accesstoken = jwt.sign(user, process.env.ACCESS_TOKEN, { expiresIn: '15m' });
+  if (password?.length < 8) {
     res.status(200).json({
-      "status": 0,
-      "message": "Login Success",
-      "data": sql,
-      "token": accesstoken
-    })
-  } else {
+      "status": 102,
+      "message": "Password Minimal 8 karakter",
+      "data": null
+    });
+  } else if (!email.includes('@')) {
     res.status(200).json({
-      "status": 0,
-      "message": "Login Failed",
+      "status": 102,
+      "message": "Paramter email tidak sesuai format",
       "data": null
     })
+  } else if (!email.includes('.')) {
+    res.status(200).json({
+      "status": 102,
+      "message": "Paramter email tidak sesuai format",
+      "data": null
+    })
+  } else {
+    const sql = await executeQuery('select * from users where email= ? and password = ? limit 1', [email, password])
+    if (sql.length > 0) {
+      const user = {
+        email: email,
+      }
+      const accesstoken = jwt.sign(user, process.env.ACCESS_TOKEN, { expiresIn: '15m' });
+      res.status(200).json({
+        "status": 0,
+        "message": "Login Success",
+        "data": sql,
+        "token": accesstoken
+      })
+    } else {
+      res.status(200).json({
+        "status": 0,
+        "message": "Login Failed",
+        "data": null
+      })
+    }
   }
 })
 
@@ -89,6 +125,7 @@ function auth(req, res, next) {
     next()
   })
 }
+
 
 app.get('/profile', auth, async (req, res) => {
   const authHeader = req.headers['authorization'];
@@ -257,7 +294,7 @@ app.post('/transaction', auth, async (req, res) => {
   if (saldo[0]?.amount > orders[0]?.service_tarif) {
     const today = new Date();
     const month = (today.getMonth() + 1);
-    const datess = today.getDate() + "" +month + ""+today.getFullYear();
+    const datess = today.getDate() + "" + month + "" + today.getFullYear();
     let id_inv = "";
     const variable = await executeQuery('select id,email,max(id) as id_jml from transaction');
     if (variable[0]?.id_jml == null || variable[0]?.id_jml == "") {
@@ -319,4 +356,4 @@ app.get('/transaction/history', auth, async (req, res) => {
 
 //::::::::::::::::::::::::::::::::::::::::::::::: END OF TRANSACTION ::::::::::::::::::::::::::::::::::::::::::::::::::
 
-app.listen(6000);
+app.listen(7000);
