@@ -97,7 +97,7 @@ app.post('/login', async (req, res) => {
       const user = {
         email: email,
       }
-      const accesstoken = jwt.sign(user, process.env.ACCESS_TOKEN, { expiresIn: '15m' });
+      const accesstoken = jwt.sign(user, process.env.ACCESS_TOKEN, { expiresIn: '1m' });
       res.status(200).json({
         "status": 0,
         "message": "Login Success",
@@ -141,13 +141,26 @@ app.get('/profile', auth, async (req, res) => {
     })
   } else {
     res.status(200).json({
-      "status": 0,
-      "message": "Failed",
+      "status": 108,
+      "message": "Token tidak tidak valid atau kadaluwarsa",
       "data": null
     })
   }
 })
 
+// app.get('/testjson', async (req,res) => {
+// const data =  {
+//             "id": 2,
+//             "email": "user@nutech-integrasi.com",
+//             "first_name": "User Edited",
+//             "last_name": "Nutech Edited",
+//             "password": "abcdef1234",
+//             "profile_image": "images.jpeg"
+//         };
+
+//         res.status(200).json(data)
+
+// });
 
 app.put('/profile/update', auth, async (req, res) => {
   const authHeader = req.headers['authorization'];
@@ -166,8 +179,8 @@ app.put('/profile/update', auth, async (req, res) => {
     })
   } else {
     res.status(200).json({
-      "status": 0,
-      "message": "Failed",
+      "status": 108,
+      "message": "Token tidak tidak valid atau kadaluwarsa",
       "data": null
     })
   }
