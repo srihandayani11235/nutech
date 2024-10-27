@@ -97,7 +97,7 @@ app.post('/login', async (req, res) => {
       const user = {
         email: email,
       }
-      const accesstoken = jwt.sign(user, process.env.ACCESS_TOKEN, { expiresIn: '1m' });
+      const accesstoken = jwt.sign(user, process.env.ACCESS_TOKEN, { expiresIn: '12h' });
       res.status(200).json({
         "status": 0,
         "message": "Login Success",
