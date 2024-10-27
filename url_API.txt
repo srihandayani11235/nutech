@@ -1,0 +1,11 @@
+Registrasi : https://nutech.srihandayani.my.id/registration
+Login : https://nutech.srihandayani.my.id/login
+Update Profile : https://nutech.srihandayani.my.id/profile/update
+Update Profile Image : https://nutech.srihandayani.my.id/image
+View Profile : https://nutech.srihandayani.my.id/profile
+Banner: https://nutech.srihandayani.my.id/banner
+Service : https://nutech.srihandayani.my.id/services
+Balance : https://nutech.srihandayani.my.id/balance
+Top Up : https://nutech.srihandayani.my.id/topup
+Transaction : https://nutech.srihandayani.my.id/transaction
+History : https://nutech.srihandayani.my.id/history
